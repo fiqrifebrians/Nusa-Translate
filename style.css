@@ -1,0 +1,149 @@
+:root {
+    --primary-red: #CE1126; /* Merah Bendera Indonesia */
+    --bg-color: #F8F9FA;
+    --card-white: #FFFFFF;
+    --text-dark: #333333;
+    --border-color: #E0E0E0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header {
+    background-color: var(--primary-red);
+    color: white;
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.header h1 {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.header p {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.translator-container {
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    max-width: 1200px;
+    margin-top: 40px;
+    background: var(--card-white);
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+    overflow: hidden;
+    position: relative;
+}
+
+.panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel:first-child {
+    border-right: 1px solid var(--border-color);
+}
+
+.controls {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--card-white);
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    outline: none;
+    cursor: pointer;
+    background-color: var(--bg-color);
+}
+
+select:focus {
+    border-color: var(--primary-red);
+}
+
+textarea {
+    flex: 1;
+    min-height: 300px;
+    padding: 20px;
+    font-size: 20px;
+    border: none;
+    resize: none;
+    outline: none;
+    background-color: transparent;
+}
+
+#target-text {
+    background-color: #FAFAFA;
+}
+
+.swap-btn {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--card-white);
+    border: 1px solid var(--border-color);
+    color: var(--primary-red);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+.swap-btn:hover {
+    background-color: var(--primary-red);
+    color: white;
+}
+
+/* Responsif untuk HP */
+@media (max-width: 768px) {
+    .translator-container {
+        flex-direction: column;
+    }
+    
+    .panel:first-child {
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .swap-btn {
+        top: 50%;
+        left: 20px;
+        transform: translateY(-50%);
+    }
+
+    textarea {
+        min-height: 200px;
+    }
+}
