@@ -5,6 +5,16 @@ const targetText = document.getElementById('target-text');
 const swapBtn = document.getElementById('swap-btn');
 const historyList = document.getElementById('history-list');
 
+// Fitur Extendable History (Accordion Toggle)
+const historyToggle = document.getElementById('history-toggle');
+const historyContent = document.getElementById('history-content');
+const historyArrow = document.getElementById('history-arrow');
+
+historyToggle.addEventListener('click', () => {
+    historyContent.classList.toggle('hidden');
+    historyToggle.classList.toggle('collapsed');
+});
+
 // Fitur Tukar Bahasa
 swapBtn.addEventListener('click', () => {
     const tempLang = sourceLang.value;
@@ -21,7 +31,6 @@ swapBtn.addEventListener('click', () => {
 sourceLang.addEventListener('change', translateText);
 targetLang.addEventListener('change', translateText);
 
-// Debounce Pengetikan agar AI tidak terpanggil di setiap ketukan huruf
 let typingTimer;
 sourceText.addEventListener('input', () => {
     clearTimeout(typingTimer);
@@ -29,11 +38,9 @@ sourceText.addEventListener('input', () => {
         targetText.value = "";
         return;
     }
-    targetText.placeholder = "AI sedang menerjemahkan...";
-    typingTimer = setTimeout(translateText, 1000); // 1 detik jeda untuk menghemat kuota API
+    typingTimer = setTimeout(translateText, 800);
 });
 
-// Fitur History
 function addToHistory(sourceL, targetL, originalTxt, translatedTxt) {
     const emptyMsg = document.querySelector('.empty-history');
     if (emptyMsg) emptyMsg.remove(); 
@@ -47,60 +54,80 @@ function addToHistory(sourceL, targetL, originalTxt, translatedTxt) {
     historyList.prepend(li);
 }
 
-// Fungsi Panggil GEMINI AI API
+// Daftar bahasa yang sudah terdukung database publik
+const googleSupportedLangs = ['id', 'jv', 'su', 'mad', 'min', 'bug', 'ban', 'bjn', 'ace', 'bbc', 'mak', 'sas', 'btx', 'nia', 'btm', 'sda', 'day', 'gor'];
+
 let lastTranslatedText = ""; 
 async function translateText() {
     const text = sourceText.value.trim();
-    // Ambil teks lengkap dari dropdown (misal: "Bahasa Melayu Jambi") untuk prompt Gemini
-    const sourceName = sourceLang.options[sourceLang.selectedIndex].text;
-    const targetName = targetLang.options[targetLang.selectedIndex].text;
+    const source = sourceLang.value;
+    const target = targetLang.value;
 
     if (!text) return;
+    targetText.placeholder = "Menerjemahkan...";
 
-    try {
-        // PERHATIAN: Masukkan API Key Anda di bawah ini
-        const API_KEY = "MASUKKAN_API_KEY_GEMINI_ANDA_DI_SINI"; 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+    // PEMISAHAN LOGIKA: GOOGLE TRANSLATE vs AI
+    if (googleSupportedLangs.includes(target) && googleSupportedLangs.includes(source)) {
+        // --- 1. GUNAKAN CARA LAMA (GOOGLE API GRATIS) ---
+        try {
+            const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${source}&tl=${target}&dt=t&q=${encodeURIComponent(text)}`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("Terjadi masalah jaringan");
 
-        // Prompt rekayasa (Prompt Engineering) agar Gemini bertindak sebagai translator murni
-        const promptText = `Anda adalah penerjemah ahli. Terjemahkan teks berikut dari ${sourceName} ke ${targetName}. 
-        Aturan:
-        1. Hanya berikan hasil terjemahannya saja.
-        2. Jangan tambahkan penjelasan, tanda kutip, atau teks tambahan apapun.
-        Teks: "${text}"`;
+            const data = await response.json();
+            let translatedResult = "";
+            if (data && data[0]) {
+                data[0].forEach(item => {
+                    if (item[0]) translatedResult += item[0];
+                });
+            }
+            targetText.value = translatedResult;
 
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: promptText }] }]
-            })
-        });
-
-        if (!response.ok) throw new Error("Terjadi masalah jaringan atau API Key tidak valid");
-
-        const data = await response.json();
-        
-        // Ekstraksi hasil teks dari JSON response Gemini
-        const translatedResult = data.candidates[0].content.parts[0].text.trim();
-        
-        targetText.value = translatedResult;
-
-        // Catat ke History
-        if (lastTranslatedText !== text && translatedResult !== text) {
-            addToHistory(sourceLang.value, targetLang.value, text, translatedResult);
-            lastTranslatedText = text;
+            if (lastTranslatedText !== text) {
+                addToHistory(source, target, text, translatedResult);
+                lastTranslatedText = text;
+            }
+        } catch (error) {
+            targetText.value = text; 
         }
 
-    } catch (error) {
-        console.error("Gagal menerjemahkan:", error);
-        targetText.value = "Gagal menghubungi AI. Pastikan API Key valid."; 
+    } else {
+        // --- 2. HANYA GUNAKAN AI JIKA BAHASA TIDAK ADA DI DATABASE (Musi/Jambi) ---
+        const sourceName = sourceLang.options[sourceLang.selectedIndex].text;
+        const targetName = targetLang.options[targetLang.selectedIndex].text;
+        const API_KEY = ""; // Masukkan API_KEY di sini jika ingin menghidupkan AI
+
+        if (!API_KEY) {
+            targetText.value = `Fitur AI untuk ${targetName} belum aktif. Mohon tambahkan API Key pada script.`;
+            return;
+        }
+
+        try {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+            const promptText = `Terjemahkan kalimat ini dari ${sourceName} ke ${targetName} dengan akurat. Hanya berikan hasil akhir tanpa tanda kutip. Teks: "${text}"`;
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+            });
+
+            if (!response.ok) throw new Error();
+            const data = await response.json();
+            const translatedResult = data.candidates[0].content.parts[0].text.trim();
+            targetText.value = translatedResult;
+
+            if (lastTranslatedText !== text) {
+                addToHistory(source, target, text, translatedResult);
+                lastTranslatedText = text;
+            }
+        } catch (error) {
+            targetText.value = "Gagal memproses bahasa ini menggunakan AI."; 
+        }
     }
 }
 
-// === FITUR VOICE ===
-
-// 1. Voice Input (Mic)
+// === FITUR VOICE MINIMALIS ===
 const micBtn = document.getElementById('mic-btn');
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -111,7 +138,7 @@ if (SpeechRecognition) {
 
     micBtn.addEventListener('click', () => {
         recognition.start();
-        micBtn.classList.add('recording');
+        micBtn.style.color = "#D31227"; // Warna merah saat merekam
         sourceText.placeholder = "Mendengarkan...";
     });
 
@@ -124,19 +151,13 @@ if (SpeechRecognition) {
 
     recognition.onspeechend = () => {
         recognition.stop();
-        micBtn.classList.remove('recording');
+        micBtn.style.color = "#9CA3AF";
         sourceText.placeholder = "Ketik atau ucapkan teks di sini...";
-    };
-
-    recognition.onerror = () => {
-        micBtn.classList.remove('recording');
-        sourceText.placeholder = "Suara tidak terdengar...";
     };
 } else {
     micBtn.style.display = "none";
 }
 
-// 2. Voice Output (Speaker)
 const speakBtn = document.getElementById('speak-btn');
 speakBtn.addEventListener('click', () => {
     const textToSpeak = targetText.value;
@@ -144,6 +165,5 @@ speakBtn.addEventListener('click', () => {
 
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.lang = 'id-ID'; 
-    utterance.rate = 0.9; 
     window.speechSynthesis.speak(utterance);
 });

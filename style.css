@@ -19,10 +19,11 @@ body {
     min-height: 100vh;
 }
 
+/* --- HEADER --- */
 .header {
-    background-color: var(--card-white);
-    border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    background-color: var(--primary-red); /* Berubah menjadi merah */
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     padding: 12px 0;
 }
 
@@ -35,11 +36,15 @@ body {
     align-items: center;
 }
 
+/* Jika logo gelap, filter invert di bawah ini bisa dinyalakan agar logo putih. 
+   Jika logo sudah putih/cocok di background merah, hapus filter-nya. */
 .brand-logo {
     height: 40px; 
     width: auto;
+    filter: brightness(0) invert(1); 
 }
 
+/* --- TRANSLATOR LAYOUT --- */
 .translator-wrapper {
     max-width: 1280px;
     margin: 40px auto;
@@ -92,10 +97,6 @@ select {
     padding-right: 24px;
 }
 
-select:focus, select:hover {
-    color: var(--primary-red);
-}
-
 .textarea-wrapper {
     position: relative;
     flex: 1;
@@ -117,19 +118,16 @@ textarea {
     line-height: 1.5;
 }
 
-textarea::placeholder {
-    color: #9CA3AF;
-}
-
 #target-text {
     background-color: #F9FAFB;
 }
 
+/* --- TOMBOL TUKAR & ICON --- */
 .swap-btn {
     position: absolute;
-    top: 10px;
+    top: 50%; /* Diletakkan tepat di tengah halaman */
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     background-color: var(--card-white);
     border: 1px solid var(--border-color);
     color: #4B5563;
@@ -140,7 +138,7 @@ textarea::placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     transition: all 0.2s ease;
     z-index: 10;
 }
@@ -148,7 +146,6 @@ textarea::placeholder {
 .swap-btn:hover {
     color: var(--primary-red);
     border-color: var(--primary-red);
-    background-color: #FFF5F5;
 }
 
 .icon-btn {
@@ -157,10 +154,12 @@ textarea::placeholder {
     right: 20px;
     background: none;
     border: none;
-    font-size: 24px;
     cursor: pointer;
-    color: #6B7280;
+    color: #9CA3AF;
     transition: transform 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .icon-btn:hover {
@@ -168,30 +167,48 @@ textarea::placeholder {
     transform: scale(1.1);
 }
 
-.icon-btn.recording {
-    color: var(--primary-red);
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-}
-
+/* --- PANEL HISTORY EXTENDABLE --- */
 .history-container {
     margin-top: 30px;
     background: var(--card-white);
     border-radius: 16px;
-    padding: 24px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     border: 1px solid var(--border-color);
+    overflow: hidden;
 }
 
-.history-container h3 {
-    font-size: 18px;
-    margin-bottom: 15px;
-    color: var(--primary-red);
+.history-header {
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background-color: var(--card-white);
+    user-select: none;
+}
+
+.history-header h3 {
+    font-size: 16px;
+    color: var(--text-dark);
+}
+
+.history-header svg {
+    color: #6B7280;
+    transition: transform 0.3s ease;
+}
+
+.history-content {
+    padding: 0 24px 24px 24px;
+    border-top: 1px solid var(--border-color);
+    display: block; /* Default tampil, atau gunakan class hidden di bawah */
+}
+
+.history-content.hidden {
+    display: none;
+}
+
+.history-header.collapsed svg {
+    transform: rotate(-90deg);
 }
 
 #history-list {
@@ -203,7 +220,7 @@ textarea::placeholder {
 #history-list li {
     padding: 12px 0;
     border-bottom: 1px solid var(--border-color);
-    font-size: 15px;
+    font-size: 14px;
 }
 
 #history-list li:last-child {
@@ -212,9 +229,9 @@ textarea::placeholder {
 
 .history-src {
     font-weight: 600;
-    color: #4B5563;
+    color: #6B7280;
     margin-bottom: 4px;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .empty-history {
@@ -223,6 +240,7 @@ textarea::placeholder {
     border: none !important;
 }
 
+/* --- RESPONSIF --- */
 @media (max-width: 768px) {
     .translator-container {
         flex-direction: column;
@@ -235,11 +253,6 @@ textarea::placeholder {
         border-bottom: 1px solid var(--border-color);
     }
     .swap-btn {
-        top: 50%;
-        transform: translate(-50%, -50%);
-    }
-    textarea {
-        height: 180px;
-        font-size: 18px;
+        transform: translate(-50%, -50%) rotate(90deg); /* Diputar di tampilan HP */
     }
 }
