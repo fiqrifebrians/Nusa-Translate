@@ -4,7 +4,7 @@ const sourceText = document.getElementById('source-text');
 const targetText = document.getElementById('target-text');
 const swapBtn = document.getElementById('swap-btn');
 
-// Fungsi untuk menukar bahasa
+// Fitur Tombol Tukar Bahasa
 swapBtn.addEventListener('click', () => {
     const tempLang = sourceLang.value;
     sourceLang.value = targetLang.value;
@@ -19,14 +19,12 @@ swapBtn.addEventListener('click', () => {
     }
 });
 
-// Otomatis terjemahkan ketika bahasa diganti
+// Otomatis update saat bahasa diganti
 sourceLang.addEventListener('change', translateText);
 targetLang.addEventListener('change', translateText);
 
-// Logika Real-Time Debounce
+// Deteksi ketikan secara real-time (Debounce: 500ms)
 let typingTimer;
-const typingInterval = 600; // Eksekusi setelah 600ms berhenti mengetik
-
 sourceText.addEventListener('input', () => {
     clearTimeout(typingTimer);
     
@@ -37,10 +35,10 @@ sourceText.addEventListener('input', () => {
 
     typingTimer = setTimeout(() => {
         translateText();
-    }, typingInterval);
+    }, 500);
 });
 
-// Fungsi memanggil API
+// Pemanggilan Translator API
 async function translateText() {
     const text = sourceText.value.trim();
     const source = sourceLang.value;
@@ -52,28 +50,28 @@ async function translateText() {
     }
 
     try {
-        // MENGGUNAKAN API PUBLIK GOOGLE TRANSLATE SEBAGAI ENGINE SEMENTARA AGAR BENAR-BENAR BERFUNGSI
-        // URL ini aman dari blokir CORS untuk penggunaan front-end sederhana
+        // Menggunakan API Gratis Publik Google sebagai penggerak Real-Time
         const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${source}&tl=${target}&dt=t&q=${encodeURIComponent(text)}`;
         
         const response = await fetch(url);
         
-        if (!response.ok) throw new Error("Jaringan bermasalah");
+        if (!response.ok) throw new Error("Terjadi masalah jaringan");
 
         const data = await response.json();
         
-        // Mengekstrak hasil terjemahan dari array JSON Google API
+        // Membentuk teks hasil terjemahan
         let translatedResult = "";
-        data[0].forEach(item => {
-            translatedResult += item[0];
-        });
+        if (data && data[0]) {
+            data[0].forEach(item => {
+                if (item[0]) translatedResult += item[0];
+            });
+        }
 
-        // Tampilkan hasil tanpa embel-embel teks [Hasil AI]
         targetText.value = translatedResult;
 
     } catch (error) {
         console.error("Gagal menerjemahkan:", error);
-        // Fallback jika API gagal atau bahasa daerah spesifik tidak ditemukan di database API
-        targetText.value = text;
+        // Tampilkan teks asal jika API terkendala atau bahasa tidak ada di database 
+        targetText.value = text; 
     }
 }

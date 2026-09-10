@@ -4,20 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nusa Translate</title>
-    <!-- Menggunakan Font Poppins yang profesional dan elegan -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Font profesional Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="header">
         <div class="header-container">
-            <!-- Logo Nusa Translate (SVG) -->
-            <svg class="logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                <path d="M8 11h8"></path>
-                <path d="M8 15h6"></path>
-            </svg>
-            <h1>Nusa Translate</h1>
+            <!-- Logo diposisikan di Kanan Atas menggunakan nama file yang Anda berikan -->
+            <img src="Screenshot 2026-09-10 at 08.13.42.png" alt="Nusa Translate Logo" class="brand-logo">
         </div>
     </header>
 
@@ -52,9 +47,9 @@
                 <textarea id="source-text" placeholder="Ketik teks di sini..."></textarea>
             </div>
 
-            <!-- Tombol Tukar -->
+            <!-- Tombol Tukar Bahasa -->
             <button id="swap-btn" class="swap-btn" aria-label="Tukar Bahasa">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 21l6-6M4 4l5 5"></path>
                 </svg>
             </button>
@@ -85,7 +80,7 @@
                         <option value="gor">Bahasa Gorontalo</option>
                     </select>
                 </div>
-                <textarea id="target-text" placeholder="Terjemahan akan muncul di sini..." readonly></textarea>
+                <textarea id="target-text" placeholder="Terjemahan akan muncul secara otomatis..." readonly></textarea>
             </div>
         </div>
     </main>
