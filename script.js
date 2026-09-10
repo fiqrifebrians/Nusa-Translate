@@ -36,6 +36,7 @@ sourceText.addEventListener('input', () => {
     clearTimeout(typingTimer);
     if (sourceText.value.trim() === "") {
         targetText.value = "";
+        targetText.placeholder = "";
         return;
     }
     typingTimer = setTimeout(translateText, 800);
@@ -64,11 +65,12 @@ async function translateText() {
     const target = targetLang.value;
 
     if (!text) return;
+    
+    targetText.value = ""; // Kosongkan saat mulai memproses
     targetText.placeholder = "Menerjemahkan...";
 
-    // PEMISAHAN LOGIKA: GOOGLE TRANSLATE vs AI
+    // PEMISAHAN LOGIKA TRANSLATOR
     if (googleSupportedLangs.includes(target) && googleSupportedLangs.includes(source)) {
-        // --- 1. GUNAKAN CARA LAMA (GOOGLE API GRATIS) ---
         try {
             const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${source}&tl=${target}&dt=t&q=${encodeURIComponent(text)}`;
             const response = await fetch(url);
@@ -81,6 +83,8 @@ async function translateText() {
                     if (item[0]) translatedResult += item[0];
                 });
             }
+            
+            targetText.placeholder = "";
             targetText.value = translatedResult;
 
             if (lastTranslatedText !== text) {
@@ -88,17 +92,19 @@ async function translateText() {
                 lastTranslatedText = text;
             }
         } catch (error) {
-            targetText.value = text; 
+            targetText.placeholder = "";
+            targetText.value = "Terjadi masalah jaringan."; 
         }
 
     } else {
-        // --- 2. HANYA GUNAKAN AI JIKA BAHASA TIDAK ADA DI DATABASE (Musi/Jambi) ---
         const sourceName = sourceLang.options[sourceLang.selectedIndex].text;
         const targetName = targetLang.options[targetLang.selectedIndex].text;
-        const API_KEY = ""; // Masukkan API_KEY di sini jika ingin menghidupkan AI
-
+        const API_KEY = ""; // Isi API Key Anda di sini
+        
+        // Jika API belum diatur, lempar sebagai error jaringan
         if (!API_KEY) {
-            targetText.value = `Fitur AI untuk ${targetName} belum aktif. Mohon tambahkan API Key pada script.`;
+            targetText.placeholder = "";
+            targetText.value = "Terjadi masalah jaringan.";
             return;
         }
 
@@ -115,6 +121,8 @@ async function translateText() {
             if (!response.ok) throw new Error();
             const data = await response.json();
             const translatedResult = data.candidates[0].content.parts[0].text.trim();
+            
+            targetText.placeholder = "";
             targetText.value = translatedResult;
 
             if (lastTranslatedText !== text) {
@@ -122,12 +130,13 @@ async function translateText() {
                 lastTranslatedText = text;
             }
         } catch (error) {
-            targetText.value = "Gagal memproses bahasa ini menggunakan AI."; 
+            targetText.placeholder = "";
+            targetText.value = "Terjadi masalah jaringan."; 
         }
     }
 }
 
-// === FITUR VOICE MINIMALIS ===
+// === FITUR VOICE ===
 const micBtn = document.getElementById('mic-btn');
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -138,7 +147,7 @@ if (SpeechRecognition) {
 
     micBtn.addEventListener('click', () => {
         recognition.start();
-        micBtn.style.color = "#D31227"; // Warna merah saat merekam
+        micBtn.style.color = "#D31227"; 
         sourceText.placeholder = "Mendengarkan...";
     });
 
@@ -161,7 +170,7 @@ if (SpeechRecognition) {
 const speakBtn = document.getElementById('speak-btn');
 speakBtn.addEventListener('click', () => {
     const textToSpeak = targetText.value;
-    if (!textToSpeak) return;
+    if (!textToSpeak || textToSpeak === "Terjadi masalah jaringan.") return;
 
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.lang = 'id-ID'; 

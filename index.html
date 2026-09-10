@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nusa Translate</title>
-    <!-- Menambahkan favicon dari folder assets -->
     <link rel="icon" type="image/png" href="assets/mini-logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -46,14 +45,13 @@
                 </div>
                 <div class="textarea-wrapper">
                     <textarea id="source-text" placeholder="Ketik atau ucapkan teks di sini..."></textarea>
-                    <!-- Icon Mic Minimalis -->
                     <button id="mic-btn" class="icon-btn" aria-label="Input Suara">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
                     </button>
                 </div>
             </div>
 
-            <!-- Tombol Tukar Bahasa di Tengah Panel -->
+            <!-- Tombol Tukar Bahasa -->
             <button id="swap-btn" class="swap-btn" aria-label="Tukar Bahasa">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M17 3l4 4-4 4"></path>
@@ -90,8 +88,8 @@
                     </select>
                 </div>
                 <div class="textarea-wrapper">
-                    <textarea id="target-text" placeholder="Terjemahan akan muncul secara otomatis..." readonly></textarea>
-                    <!-- Icon Speaker Minimalis -->
+                    <!-- Placeholder dihapus, akan diatur via JavaScript -->
+                    <textarea id="target-text" readonly></textarea>
                     <button id="speak-btn" class="icon-btn" aria-label="Bacakan Teks">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
                     </button>
@@ -99,7 +97,7 @@
             </div>
         </div>
 
-        <!-- Panel Riwayat (History) Extendable -->
+        <!-- Panel Riwayat (History) -->
         <div class="history-container">
             <div class="history-header" id="history-toggle">
                 <h3>Riwayat Terjemahan</h3>
