@@ -1,50 +1,33 @@
-async function getTranslation(text, sourceCode, targetCode, sourceName, targetName) {
-    if (!text) return "";
-    
-    let result = "";
+/**
+ * api.js
+ * Bertugas khusus untuk komunikasi dengan API Google Translate
+ */
 
-    // TAHAP 1: Coba gunakan Google Translate API Publik
+async function getTranslation(text, sourceCode, targetCode) {
+    if (!text) return "";
+
     try {
         const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceCode}&tl=${targetCode}&dt=t&q=${encodeURIComponent(text)}`;
         const response = await fetch(url);
-        if (response.ok) {
-            const data = await response.json();
-            if (data && data[0]) {
-                data[0].forEach(item => {
-                    if (item[0]) result += item[0];
-                });
-            }
+        
+        if (!response.ok) {
+            throw new Error("Gagal mengambil data dari server");
         }
-    } catch (error) {
-        // Abaikan error secara diam-diam
-    }
 
-    // TAHAP 2: Jika Google mengembalikan teks yang sama persis (bahasa tidak didukung)
-    if (!result || result.trim().toLowerCase() === text.trim().toLowerCase()) {
-        try {
-            // Memanggil worker serverless kita sendiri BUKAN memanggil Gemini secara langsung
-            const response = await fetch('/api/translate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    text: text, 
-                    sourceName: sourceName, 
-                    targetName: targetName 
-                })
+        const data = await response.json();
+        let translatedResult = "";
+        
+        if (data && data[0]) {
+            data[0].forEach(item => {
+                if (item[0]) translatedResult += item[0];
             });
-
-            if (response.ok) {
-                const data = await response.json();
-                if (data.translatedText) {
-                    result = data.translatedText;
-                }
-            } else {
-                throw new Error("Backend Error");
-            }
-        } catch (error) {
-            return "Terjadi masalah jaringan."; 
         }
-    }
+        
+        // Kembalikan hasil terjemahan. Jika kosong, kembalikan teks aslinya.
+        return translatedResult || text;
 
-    return result || text;
+    } catch (error) {
+        // Hanya menampilkan "Sistem error" sesuai permintaan jika terjadi gangguan
+        return "Sistem error"; 
+    }
 }

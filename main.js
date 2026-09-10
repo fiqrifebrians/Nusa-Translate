@@ -1,3 +1,8 @@
+/**
+ * main.js
+ * Bertugas khusus untuk antarmuka pengguna (UI), DOM, Suara, dan Riwayat
+ */
+
 // --- DEKLARASI ELEMEN DOM ---
 const sourceLang = document.getElementById('source-lang');
 const targetLang = document.getElementById('target-lang');
@@ -13,21 +18,17 @@ const micBtn = document.getElementById('mic-btn');
 const historyToggle = document.getElementById('history-toggle');
 const historyContent = document.getElementById('history-content');
 
-// --- PENGATURAN SUARA (TEXT-TO-SPEECH) ---
-// Pancing browser untuk memuat voices di awal
+// --- PENGATURAN SUARA (TEXT-TO-SPEECH BAHASA INDONESIA) ---
 window.speechSynthesis.getVoices();
 
 function speakText(text) {
-    if (!text || text === "Terjadi masalah jaringan.") return;
+    if (!text || text === "Sistem error") return;
     
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'id-ID'; 
-    utterance.rate = 0.9; // Diperlambat sedikit agar terdengar lebih jelas
+    utterance.rate = 0.9;
     
-    // Ambil daftar suara tepat saat tombol diklik agar tidak kosong (async issue fix)
     let availableVoices = window.speechSynthesis.getVoices();
-    
-    // Filter ketat untuk memaksa suara Indonesia
     const idVoice = availableVoices.find(v => 
         v.lang === 'id-ID' || 
         v.lang === 'id_ID' || 
@@ -68,7 +69,7 @@ function toggleSpeakerButtons() {
         sourceSpeakBtn.classList.add('hidden');
     }
     
-    if (targetText.value.trim() !== "" && targetText.value !== "Terjadi masalah jaringan.") {
+    if (targetText.value.trim() !== "" && targetText.value !== "Sistem error") {
         targetSpeakBtn.classList.remove('hidden');
     } else {
         targetSpeakBtn.classList.add('hidden');
@@ -122,15 +123,15 @@ async function processTranslation() {
     targetText.placeholder = "Menerjemahkan...";
     targetSpeakBtn.classList.add('hidden'); 
 
-    // Panggil fungsi getTranslation dari file api.js
-    const finalResult = await getTranslation(text, sourceCode, targetCode, sourceName, targetName);
+    // Memanggil API dari file api.js
+    const finalResult = await getTranslation(text, sourceCode, targetCode);
     
     targetText.placeholder = "";
     targetText.value = finalResult;
-    
-    // Hanya catat di history jika hasil valid
-    if (lastTranslatedText !== text && finalResult !== "Terjadi masalah jaringan." && finalResult.toLowerCase() !== text.toLowerCase()) {
-        addToHistory(sourceName, targetName, text, finalResult);
+
+    // Masukkan ke history hanya jika hasil valid dan bukan teks asli yang sama persis
+    if (lastTranslatedText !== text && targetText.value !== text && targetText.value !== "Sistem error") {
+        addToHistory(sourceName, targetName, text, targetText.value);
         lastTranslatedText = text;
     }
     

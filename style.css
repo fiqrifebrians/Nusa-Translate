@@ -19,7 +19,6 @@ body {
     min-height: 100vh;
 }
 
-/* --- HEADER --- */
 .header {
     background-color: var(--primary-red);
     border-bottom: 1px solid rgba(0,0,0,0.1);
@@ -39,10 +38,9 @@ body {
 .brand-logo {
     height: 40px; 
     width: auto;
-    filter: brightness(0) invert(1); /* Membuat logo putih di background merah */
+    filter: brightness(0) invert(1); 
 }
 
-/* --- TRANSLATOR LAYOUT --- */
 .translator-wrapper {
     max-width: 1280px;
     margin: 40px auto;
@@ -120,7 +118,6 @@ textarea {
     background-color: #F9FAFB;
 }
 
-/* --- TOMBOL TUKAR (SWAP) --- */
 .swap-btn {
     position: absolute;
     top: 50%;
@@ -146,13 +143,12 @@ textarea {
     border-color: var(--primary-red);
 }
 
-/* --- ICON & ACTION BUTTONS --- */
 .action-buttons {
     position: absolute;
     bottom: 20px;
     right: 20px;
     display: flex;
-    gap: 16px; /* Memberi jarak antar icon agar tidak menumpuk */
+    gap: 16px; 
     align-items: center;
 }
 
@@ -176,7 +172,6 @@ textarea {
     display: none !important;
 }
 
-/* --- PANEL HISTORY EXTENDABLE --- */
 .history-container {
     margin-top: 30px;
     background: var(--card-white);
@@ -249,7 +244,6 @@ textarea {
     border: none !important;
 }
 
-/* --- RESPONSIF --- */
 @media (max-width: 768px) {
     .translator-container {
         flex-direction: column;
