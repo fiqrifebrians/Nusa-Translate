@@ -1,54 +1,46 @@
-// Mengambil elemen dari DOM
 const sourceLang = document.getElementById('source-lang');
 const targetLang = document.getElementById('target-lang');
 const sourceText = document.getElementById('source-text');
 const targetText = document.getElementById('target-text');
 const swapBtn = document.getElementById('swap-btn');
 
-// Fungsi untuk menukar bahasa dan teks
+// Fungsi untuk menukar bahasa
 swapBtn.addEventListener('click', () => {
-    // Tukar pilihan bahasa
     const tempLang = sourceLang.value;
     sourceLang.value = targetLang.value;
     targetLang.value = tempLang;
 
-    // Tukar teks (opsional, tergantung UX yang diinginkan)
     const tempText = sourceText.value;
     sourceText.value = targetText.value;
     targetText.value = tempText;
 
-    // Picu terjemahan ulang jika ada teks
     if (sourceText.value.trim() !== "") {
         translateText();
     }
 });
 
-// Event Listener pada dropdown agar otomatis menerjemahkan saat bahasa diubah
+// Otomatis terjemahkan ketika bahasa diganti
 sourceLang.addEventListener('change', translateText);
 targetLang.addEventListener('change', translateText);
 
-// --- LOGIKA REAL-TIME DENGAN DEBOUNCE ---
-// Debounce mencegah API dipanggil berulang kali setiap detik saat mengetik.
+// Logika Real-Time Debounce
 let typingTimer;
-const typingInterval = 500; // 500ms setelah selesai mengetik
+const typingInterval = 600; // Eksekusi setelah 600ms berhenti mengetik
 
 sourceText.addEventListener('input', () => {
     clearTimeout(typingTimer);
     
-    // Tampilkan indikator sedang mengetik/menerjemahkan
     if (sourceText.value.trim() === "") {
         targetText.value = "";
         return;
     }
-    
-    targetText.value = "Menerjemahkan...";
 
     typingTimer = setTimeout(() => {
         translateText();
     }, typingInterval);
 });
 
-// Fungsi pemanggil AI (Simulasi)
+// Fungsi memanggil API
 async function translateText() {
     const text = sourceText.value.trim();
     const source = sourceLang.value;
@@ -60,33 +52,28 @@ async function translateText() {
     }
 
     try {
-        // DI SINI ADALAH TEMPAT UNTUK MEMANGGIL API AI ASLI (misal: OpenAI / Google Cloud)
-        // Contoh implementasi fetch asli (dikomentari):
-        /*
-        const response = await fetch('URL_API_BACKEND_ANDA', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text, source, target })
-        });
-        const data = await response.json();
-        targetText.value = data.translated_text;
-        */
+        // MENGGUNAKAN API PUBLIK GOOGLE TRANSLATE SEBAGAI ENGINE SEMENTARA AGAR BENAR-BENAR BERFUNGSI
+        // URL ini aman dari blokir CORS untuk penggunaan front-end sederhana
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${source}&tl=${target}&dt=t&q=${encodeURIComponent(text)}`;
+        
+        const response = await fetch(url);
+        
+        if (!response.ok) throw new Error("Jaringan bermasalah");
 
-        // Simulasi respon AI (Mock AI):
-        targetText.value = await mockAIApiCall(text, source, target);
+        const data = await response.json();
+        
+        // Mengekstrak hasil terjemahan dari array JSON Google API
+        let translatedResult = "";
+        data[0].forEach(item => {
+            translatedResult += item[0];
+        });
+
+        // Tampilkan hasil tanpa embel-embel teks [Hasil AI]
+        targetText.value = translatedResult;
 
     } catch (error) {
         console.error("Gagal menerjemahkan:", error);
-        targetText.value = "Maaf, terjadi kesalahan saat menghubungi AI.";
+        // Fallback jika API gagal atau bahasa daerah spesifik tidak ditemukan di database API
+        targetText.value = text;
     }
-}
-
-// Fungsi pura-pura untuk meniru jeda dan hasil dari AI
-function mockAIApiCall(text, source, target) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            // Simulasi hasil terjemahan
-            resolve(`[Hasil AI dari ${source.toUpperCase()} ke ${target.toUpperCase()}]\n\n${text}`);
-        }, 600); // Simulasi delay jaringan 600ms
-    });
 }

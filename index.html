@@ -3,75 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nusantara Translate - AI</title>
+    <title>Nusa Translate</title>
+    <!-- Menggunakan Font Poppins yang profesional dan elegan -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="header">
-        <h1>Nusantara Translate</h1>
-        <p>Penerjemah Bahasa Daerah Real-Time bertenaga AI</p>
+        <div class="header-container">
+            <!-- Logo Nusa Translate (SVG) -->
+            <svg class="logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <path d="M8 11h8"></path>
+                <path d="M8 15h6"></path>
+            </svg>
+            <h1>Nusa Translate</h1>
+        </div>
     </header>
 
-    <main class="translator-container">
-        <!-- Panel Bahasa Asal -->
-        <div class="panel">
-            <div class="controls">
-                <select id="source-lang">
-                    <option value="id" selected>Bahasa Indonesia</option>
-                    <option value="jv">Bahasa Jawa</option>
-                    <option value="su">Bahasa Sunda</option>
-                    <option value="mad">Bahasa Madura</option>
-                    <option value="min">Bahasa Minangkabau</option>
-                    <option value="bug">Bahasa Bugis</option>
-                    <option value="ban">Bahasa Bali</option>
-                    <option value="bjn">Bahasa Banjar</option>
-                    <option value="ace">Bahasa Aceh</option>
-                    <option value="bbc">Bahasa Batak Toba</option>
-                    <option value="mak">Bahasa Makassar</option>
-                    <option value="sas">Bahasa Sasak</option>
-                    <option value="btx">Bahasa Batak Karo</option>
-                    <option value="nia">Bahasa Nias</option>
-                    <option value="btm">Bahasa Mandailing</option>
-                    <option value="sda">Bahasa Toraja</option>
-                    <option value="day">Bahasa Dayak</option>
-                    <option value="jax">Bahasa Melayu Jambi</option>
-                    <option value="mui">Bahasa Musi (Palembang)</option>
-                    <option value="gor">Bahasa Gorontalo</option>
-                </select>
+    <main class="translator-wrapper">
+        <div class="translator-container">
+            <!-- Panel Bahasa Asal -->
+            <div class="panel">
+                <div class="controls">
+                    <select id="source-lang">
+                        <option value="id" selected>Bahasa Indonesia</option>
+                        <option value="jv">Bahasa Jawa</option>
+                        <option value="su">Bahasa Sunda</option>
+                        <option value="mad">Bahasa Madura</option>
+                        <option value="min">Bahasa Minangkabau</option>
+                        <option value="bug">Bahasa Bugis</option>
+                        <option value="ban">Bahasa Bali</option>
+                        <option value="bjn">Bahasa Banjar</option>
+                        <option value="ace">Bahasa Aceh</option>
+                        <option value="bbc">Bahasa Batak Toba</option>
+                        <option value="mak">Bahasa Makassar</option>
+                        <option value="sas">Bahasa Sasak</option>
+                        <option value="btx">Bahasa Batak Karo</option>
+                        <option value="nia">Bahasa Nias</option>
+                        <option value="btm">Bahasa Mandailing</option>
+                        <option value="sda">Bahasa Toraja</option>
+                        <option value="day">Bahasa Dayak</option>
+                        <option value="jax">Bahasa Melayu Jambi</option>
+                        <option value="mui">Bahasa Musi (Palembang)</option>
+                        <option value="gor">Bahasa Gorontalo</option>
+                    </select>
+                </div>
+                <textarea id="source-text" placeholder="Ketik teks di sini..."></textarea>
             </div>
-            <textarea id="source-text" placeholder="Ketik teks di sini..."></textarea>
-        </div>
 
-        <!-- Tombol Tukar -->
-        <button id="swap-btn" class="swap-btn" aria-label="Tukar Bahasa">⇄</button>
+            <!-- Tombol Tukar -->
+            <button id="swap-btn" class="swap-btn" aria-label="Tukar Bahasa">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 21l6-6M4 4l5 5"></path>
+                </svg>
+            </button>
 
-        <!-- Panel Bahasa Tujuan -->
-        <div class="panel">
-            <div class="controls">
-                <select id="target-lang">
-                    <option value="id">Bahasa Indonesia</option>
-                    <option value="jv" selected>Bahasa Jawa</option>
-                    <option value="su">Bahasa Sunda</option>
-                    <option value="mad">Bahasa Madura</option>
-                    <option value="min">Bahasa Minangkabau</option>
-                    <option value="bug">Bahasa Bugis</option>
-                    <option value="ban">Bahasa Bali</option>
-                    <option value="bjn">Bahasa Banjar</option>
-                    <option value="ace">Bahasa Aceh</option>
-                    <option value="bbc">Bahasa Batak Toba</option>
-                    <option value="mak">Bahasa Makassar</option>
-                    <option value="sas">Bahasa Sasak</option>
-                    <option value="btx">Bahasa Batak Karo</option>
-                    <option value="nia">Bahasa Nias</option>
-                    <option value="btm">Bahasa Mandailing</option>
-                    <option value="sda">Bahasa Toraja</option>
-                    <option value="day">Bahasa Dayak</option>
-                    <option value="jax">Bahasa Melayu Jambi</option>
-                    <option value="mui">Bahasa Musi (Palembang)</option>
-                    <option value="gor">Bahasa Gorontalo</option>
-                </select>
+            <!-- Panel Bahasa Tujuan -->
+            <div class="panel">
+                <div class="controls">
+                    <select id="target-lang">
+                        <option value="id">Bahasa Indonesia</option>
+                        <option value="jv" selected>Bahasa Jawa</option>
+                        <option value="su">Bahasa Sunda</option>
+                        <option value="mad">Bahasa Madura</option>
+                        <option value="min">Bahasa Minangkabau</option>
+                        <option value="bug">Bahasa Bugis</option>
+                        <option value="ban">Bahasa Bali</option>
+                        <option value="bjn">Bahasa Banjar</option>
+                        <option value="ace">Bahasa Aceh</option>
+                        <option value="bbc">Bahasa Batak Toba</option>
+                        <option value="mak">Bahasa Makassar</option>
+                        <option value="sas">Bahasa Sasak</option>
+                        <option value="btx">Bahasa Batak Karo</option>
+                        <option value="nia">Bahasa Nias</option>
+                        <option value="btm">Bahasa Mandailing</option>
+                        <option value="sda">Bahasa Toraja</option>
+                        <option value="day">Bahasa Dayak</option>
+                        <option value="jax">Bahasa Melayu Jambi</option>
+                        <option value="mui">Bahasa Musi (Palembang)</option>
+                        <option value="gor">Bahasa Gorontalo</option>
+                    </select>
+                </div>
+                <textarea id="target-text" placeholder="Terjemahan akan muncul di sini..." readonly></textarea>
             </div>
-            <textarea id="target-text" placeholder="Terjemahan akan muncul di sini..." readonly></textarea>
         </div>
     </main>
 
