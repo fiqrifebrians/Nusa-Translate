@@ -14,18 +14,29 @@ const historyToggle = document.getElementById('history-toggle');
 const historyContent = document.getElementById('history-content');
 
 // --- PENGATURAN SUARA (TEXT-TO-SPEECH) ---
-let voices = [];
-window.speechSynthesis.onvoiceschanged = () => {
-    voices = window.speechSynthesis.getVoices();
-};
+// Pancing browser untuk memuat voices di awal
+window.speechSynthesis.getVoices();
 
 function speakText(text) {
-    if (!text) return;
+    if (!text || text === "Terjadi masalah jaringan.") return;
+    
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'id-ID'; 
+    utterance.rate = 0.9; // Diperlambat sedikit agar terdengar lebih jelas
     
-    const indonesianVoice = voices.find(v => v.lang === 'id-ID' || v.lang === 'id_ID' || v.name.includes('Indonesia'));
-    if (indonesianVoice) utterance.voice = indonesianVoice;
+    // Ambil daftar suara tepat saat tombol diklik agar tidak kosong (async issue fix)
+    let availableVoices = window.speechSynthesis.getVoices();
+    
+    // Filter ketat untuk memaksa suara Indonesia
+    const idVoice = availableVoices.find(v => 
+        v.lang === 'id-ID' || 
+        v.lang === 'id_ID' || 
+        v.name.toLowerCase().includes('indonesia')
+    );
+    
+    if (idVoice) {
+        utterance.voice = idVoice;
+    }
     
     window.speechSynthesis.speak(utterance);
 }
@@ -57,7 +68,7 @@ function toggleSpeakerButtons() {
         sourceSpeakBtn.classList.add('hidden');
     }
     
-    if (targetText.value.trim() !== "") {
+    if (targetText.value.trim() !== "" && targetText.value !== "Terjadi masalah jaringan.") {
         targetSpeakBtn.classList.remove('hidden');
     } else {
         targetSpeakBtn.classList.add('hidden');
@@ -117,7 +128,8 @@ async function processTranslation() {
     targetText.placeholder = "";
     targetText.value = finalResult;
     
-    if (lastTranslatedText !== text) {
+    // Hanya catat di history jika hasil valid
+    if (lastTranslatedText !== text && finalResult !== "Terjadi masalah jaringan." && finalResult.toLowerCase() !== text.toLowerCase()) {
         addToHistory(sourceName, targetName, text, finalResult);
         lastTranslatedText = text;
     }
