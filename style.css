@@ -1,5 +1,5 @@
 :root {
-    --primary-red: #D31227; /* Warna merah menyesuaikan logo */
+    --primary-red: #D31227; 
     --bg-color: #F0F2F5;
     --card-white: #FFFFFF;
     --text-dark: #1F2937;
@@ -19,7 +19,6 @@ body {
     min-height: 100vh;
 }
 
-/* --- HEADER --- */
 .header {
     background-color: var(--card-white);
     border-bottom: 1px solid var(--border-color);
@@ -32,17 +31,15 @@ body {
     margin: 0 auto;
     padding: 0 24px;
     display: flex;
-    justify-content: flex-end; /* Memaksa elemen di dalamnya (logo) ke arah Kanan */
+    justify-content: flex-start;
     align-items: center;
 }
 
 .brand-logo {
-    height: 48px; /* Ukuran proporsional agar tidak merusak layout */
+    height: 40px; 
     width: auto;
-    border-radius: 4px;
 }
 
-/* --- TRANSLATOR LAYOUT --- */
 .translator-wrapper {
     max-width: 1280px;
     margin: 40px auto;
@@ -88,7 +85,6 @@ select {
     cursor: pointer;
     background-color: transparent;
     appearance: none;
-    /* Panah panah dropdown */
     background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right center;
@@ -100,10 +96,17 @@ select:focus, select:hover {
     color: var(--primary-red);
 }
 
+.textarea-wrapper {
+    position: relative;
+    flex: 1;
+    display: flex;
+}
+
 textarea {
     width: 100%;
-    height: 280px;
+    height: 250px;
     padding: 24px;
+    padding-bottom: 60px;
     font-family: 'Inter', sans-serif;
     font-size: 20px;
     color: var(--text-dark);
@@ -122,23 +125,22 @@ textarea::placeholder {
     background-color: #F9FAFB;
 }
 
-/* --- TOMBOL TUKAR (SWAP) --- */
 .swap-btn {
     position: absolute;
-    top: 10px; /* Sejajar dengan kotak dropdown */
+    top: 10px;
     left: 50%;
     transform: translateX(-50%);
     background-color: var(--card-white);
     border: 1px solid var(--border-color);
-    color: #6B7280;
-    width: 42px;
-    height: 42px;
+    color: #4B5563;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     transition: all 0.2s ease;
     z-index: 10;
 }
@@ -149,7 +151,78 @@ textarea::placeholder {
     background-color: #FFF5F5;
 }
 
-/* --- RESPONSIF UNTUK HP --- */
+.icon-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #6B7280;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.icon-btn:hover {
+    color: var(--primary-red);
+    transform: scale(1.1);
+}
+
+.icon-btn.recording {
+    color: var(--primary-red);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.history-container {
+    margin-top: 30px;
+    background: var(--card-white);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+}
+
+.history-container h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: var(--primary-red);
+}
+
+#history-list {
+    list-style: none;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+#history-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 15px;
+}
+
+#history-list li:last-child {
+    border-bottom: none;
+}
+
+.history-src {
+    font-weight: 600;
+    color: #4B5563;
+    margin-bottom: 4px;
+    font-size: 13px;
+}
+
+.empty-history {
+    color: #9CA3AF;
+    font-style: italic;
+    border: none !important;
+}
+
 @media (max-width: 768px) {
     .translator-container {
         flex-direction: column;
@@ -168,8 +241,5 @@ textarea::placeholder {
     textarea {
         height: 180px;
         font-size: 18px;
-    }
-    .header-container {
-        justify-content: center; /* Di HP logo posisinya ke tengah agar bagus */
     }
 }

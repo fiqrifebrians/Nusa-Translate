@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nusa Translate</title>
-    <!-- Font profesional Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="header">
         <div class="header-container">
-            <!-- Logo diposisikan di Kanan Atas menggunakan nama file yang Anda berikan -->
+            <!-- Logo diperbaiki mengarah ke folder assets -->
             <img src="assets/nusa-translate-logo.png" alt="Nusa Translate Logo" class="brand-logo">
         </div>
     </header>
@@ -40,17 +39,24 @@
                         <option value="sda">Bahasa Toraja</option>
                         <option value="day">Bahasa Dayak</option>
                         <option value="jax">Bahasa Melayu Jambi</option>
-                        <option value="mui">Bahasa Musi (Palembang)</option>
+                        <option value="mui">Bahasa Musi</option>
                         <option value="gor">Bahasa Gorontalo</option>
                     </select>
                 </div>
-                <textarea id="source-text" placeholder="Ketik teks di sini..."></textarea>
+                <div class="textarea-wrapper">
+                    <textarea id="source-text" placeholder="Ketik atau ucapkan teks di sini..."></textarea>
+                    <!-- Tombol Voice Input -->
+                    <button id="mic-btn" class="icon-btn" aria-label="Input Suara">🎤</button>
+                </div>
             </div>
 
-            <!-- Tombol Tukar Bahasa -->
+            <!-- Tombol Tukar Bahasa dengan Icon Minimalis -->
             <button id="swap-btn" class="swap-btn" aria-label="Tukar Bahasa">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 21l6-6M4 4l5 5"></path>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 3l4 4-4 4"></path>
+                    <path d="M3 7h18"></path>
+                    <path d="M7 21l-4-4 4-4"></path>
+                    <path d="M21 17H3"></path>
                 </svg>
             </button>
 
@@ -76,12 +82,24 @@
                         <option value="sda">Bahasa Toraja</option>
                         <option value="day">Bahasa Dayak</option>
                         <option value="jax">Bahasa Melayu Jambi</option>
-                        <option value="mui">Bahasa Musi (Palembang)</option>
+                        <option value="mui">Bahasa Musi</option>
                         <option value="gor">Bahasa Gorontalo</option>
                     </select>
                 </div>
-                <textarea id="target-text" placeholder="Terjemahan akan muncul secara otomatis..." readonly></textarea>
+                <div class="textarea-wrapper">
+                    <textarea id="target-text" placeholder="Terjemahan akan muncul secara otomatis..." readonly></textarea>
+                    <!-- Tombol Voice Output -->
+                    <button id="speak-btn" class="icon-btn" aria-label="Bacakan Teks">🔊</button>
+                </div>
             </div>
+        </div>
+
+        <!-- Panel Riwayat (History) -->
+        <div class="history-container">
+            <h3>Riwayat Terjemahan</h3>
+            <ul id="history-list">
+                <li class="empty-history">Belum ada riwayat. Ketik sesuatu untuk mulai menerjemahkan.</li>
+            </ul>
         </div>
     </main>
 
