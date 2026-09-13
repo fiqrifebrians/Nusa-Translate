@@ -18,6 +18,9 @@ const micBtn = document.getElementById('mic-btn');
 const historyToggle = document.getElementById('history-toggle');
 const historyContent = document.getElementById('history-content');
 
+// Variabel untuk melacak status terjemahan agar perubahan bahasa dengan teks sama tetap masuk riwayat
+let lastTranslationState = ""; 
+
 // --- PENGATURAN SUARA (TEXT-TO-SPEECH BAHASA INDONESIA) ---
 window.speechSynthesis.getVoices();
 
@@ -50,14 +53,37 @@ historyToggle.addEventListener('click', () => {
 
 function addToHistory(sourceName, targetName, originalTxt, translatedTxt) {
     const emptyMsg = document.querySelector('.empty-history');
-    if (emptyMsg) emptyMsg.remove(); 
+    if (emptyMsg) emptyMsg.style.display = 'none';
 
     const li = document.createElement('li');
     li.innerHTML = `
-        <div class="history-src">${sourceName} ➔ ${targetName}</div>
-        <div><strong>Asal:</strong> ${originalTxt}</div>
-        <div><strong>Hasil:</strong> <em>${translatedTxt}</em></div>
+        <div class="history-content-text">
+            <div class="history-src">${sourceName} ➔ ${targetName}</div>
+            <div><strong>Asal:</strong> ${originalTxt}</div>
+            <div><strong>Hasil:</strong> <em>${translatedTxt}</em></div>
+        </div>
+        <button class="delete-history-btn" aria-label="Hapus Riwayat">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+        </button>
     `;
+
+    // Fungsi hapus individual
+    const deleteBtn = li.querySelector('.delete-history-btn');
+    deleteBtn.addEventListener('click', () => {
+        li.remove();
+        // Cek jika riwayat kosong setelah dihapus
+        const remainingItems = historyList.querySelectorAll('li:not(.empty-history)');
+        if (remainingItems.length === 0) {
+            let emptyEl = document.querySelector('.empty-history');
+            if (emptyEl) emptyEl.style.display = 'block';
+        }
+    });
+
     historyList.prepend(li);
 }
 
@@ -108,7 +134,6 @@ sourceText.addEventListener('input', () => {
     typingTimer = setTimeout(processTranslation, 800);
 });
 
-let lastTranslatedText = ""; 
 async function processTranslation() {
     const text = sourceText.value.trim();
     const sourceCode = sourceLang.value;
@@ -129,10 +154,13 @@ async function processTranslation() {
     targetText.placeholder = "";
     targetText.value = finalResult;
 
-    // Masukkan ke history hanya jika hasil valid dan bukan teks asli yang sama persis
-    if (lastTranslatedText !== text && targetText.value !== text && targetText.value !== "Sistem error") {
+    // Membuat identitas kombinasi pencarian untuk mengecek duplikat
+    const currentState = `${text}|${sourceCode}|${targetCode}`;
+
+    // Masukkan ke history jika state baru dan bukan error/asli
+    if (lastTranslationState !== currentState && targetText.value !== text && targetText.value !== "Sistem error") {
         addToHistory(sourceName, targetName, text, targetText.value);
-        lastTranslatedText = text;
+        lastTranslationState = currentState;
     }
     
     toggleSpeakerButtons();

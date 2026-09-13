@@ -27,7 +27,7 @@ async function getTranslation(text, sourceCode, targetCode) {
         return translatedResult || text;
 
     } catch (error) {
-        // Hanya menampilkan "Sistem error" sesuai permintaan jika terjadi gangguan
+        // Menampilkan pesan gangguan
         return "Sistem error"; 
     }
 }
